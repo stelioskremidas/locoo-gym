@@ -3,48 +3,66 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Locoo Gym</title>
 
 <style>
 body {
-  font-family: Arial, sans-serif;
-  background: #f2f2f2;
-  margin: 0;
-  padding: 20px;
+    font-family: Arial, sans-serif;
+    background:#f4f4f4;
+    margin:0;
+    padding:20px;
 }
 
 h1 {
-  text-align: center;
+    text-align:center;
 }
 
 .card {
-  background: white;
-  padding: 20px;
-  border-radius: 15px;
-  margin-bottom: 20px;
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    margin-bottom:20px;
+    box-shadow:0 2px 8px #ccc;
 }
 
-input, button {
-  width: 100%;
-  padding: 12px;
-  margin-top: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
+input, select, button {
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    border-radius:8px;
+    border:1px solid #ccc;
+    box-sizing:border-box;
 }
 
 button {
-  background: #111;
-  color: white;
-  cursor: pointer;
+    background:#111;
+    color:white;
+    font-size:16px;
 }
 
 .item {
-  background: #eee;
-  padding: 10px;
-  margin-top: 10px;
-  border-radius: 8px;
+    background:#eee;
+    padding:12px;
+    margin-top:10px;
+    border-radius:10px;
+}
+
+.menu {
+    display:flex;
+    gap:10px;
+    margin-bottom:20px;
+}
+
+.menu button {
+    flex:1;
+}
+
+.hidden {
+    display:none;
 }
 </style>
+
 </head>
 
 <body>
@@ -52,47 +70,73 @@ button {
 <h1>🏋️ Locoo Gym</h1>
 
 <div class="card">
+<h2>Ρόλος</h2>
+
+<select id="role">
+<option value="Coach">Coach</option>
+<option value="Trainer 1">Trainer 1</option>
+</select>
+
+</div>
+
+
+<div class="menu">
+<button onclick="showClients()">👥 Πελάτες</button>
+<button onclick="showAppointments()">📅 Ραντεβού</button>
+</div>
+
+
+<div id="clientsPage" class="card">
+
 <h2>👥 Νέος Πελάτης</h2>
 
-<input id="name" placeholder="Ονοματεπώνυμο">
-<input id="phone" placeholder="Τηλέφωνο">
-<input id="money" placeholder="Χρήματα (€)">
+<input id="clientName" placeholder="Ονοματεπώνυμο">
 
-<button onclick="addClient()">Αποθήκευση</button>
+<input id="clientPhone" placeholder="Τηλέφωνο">
 
-</div>
+<input id="clientMoney" placeholder="Χρήματα (€)">
 
+<button onclick="addClient()">
+Αποθήκευση Πελάτη
+</button>
 
-<div class="card">
-<h2>Πελάτες</h2>
+<h3>Λίστα Πελατών</h3>
+
 <div id="clients"></div>
+
 </div>
 
 
-<script>
+<div id="appointmentsPage" class="card hidden">
 
-function addClient(){
+<h2>📅 Νέο Ραντεβού</h2>
 
-let name=document.getElementById("name").value;
-let phone=document.getElementById("phone").value;
-let money=document.getElementById("money").value;
+<input id="appointmentClient" placeholder="Όνομα Πελάτη">
 
-let clients=JSON.parse(localStorage.getItem("clients")) || [];
+<input id="appointmentDate" type="date">
 
-clients.push({
-name:name,
-phone:phone,
-money:money
-});
+<input id="appointmentTime" type="time">
 
-localStorage.setItem("clients",JSON.stringify(clients));
+<select id="trainer">
+<option>Coach</option>
+<option>Trainer 1</option>
+</select>
 
-showClients();
+<button onclick="addAppointment()">
+Αποθήκευση Ραντεβού
+</button>
 
-}
 
+<h3>Ραντεβού</h3>
+
+<div id="appointments"></div>
+
+</div><script>
 
 function showClients(){
+
+document.getElementById("clientsPage").classList.remove("hidden");
+document.getElementById("appointmentsPage").classList.add("hidden");
 
 let box=document.getElementById("clients");
 box.innerHTML="";
@@ -112,6 +156,92 @@ box.innerHTML += `
 });
 
 }
+
+
+function addClient(){
+
+let client={
+name:document.getElementById("clientName").value,
+phone:document.getElementById("clientPhone").value,
+money:document.getElementById("clientMoney").value
+};
+
+let clients=JSON.parse(localStorage.getItem("clients")) || [];
+
+clients.push(client);
+
+localStorage.setItem("clients",JSON.stringify(clients));
+
+showClients();
+
+}
+
+
+function showAppointments(){
+
+document.getElementById("appointmentsPage").classList.remove("hidden");
+document.getElementById("clientsPage").classList.add("hidden");
+
+let box=document.getElementById("appointments");
+box.innerHTML="";
+
+let appointments=JSON.parse(localStorage.getItem("appointments")) || [];
+
+let role=document.getElementById("role").value;
+
+
+appointments.forEach(a=>{
+
+if(role=="Coach" || a.trainer==role){
+
+box.innerHTML += `
+<div class="item">
+👤 ${a.client}<br>
+📅 ${a.date}<br>
+⏰ ${a.time}<br>
+🏋️ ${a.trainer}
+</div>
+`;
+
+}
+
+});
+
+}
+
+
+function addAppointment(){
+
+let appointment={
+
+client:document.getElementById("appointmentClient").value,
+
+date:document.getElementById("appointmentDate").value,
+
+time:document.getElementById("appointmentTime").value,
+
+trainer:document.getElementById("trainer").value
+
+};
+
+
+let appointments=JSON.parse(localStorage.getItem("appointments")) || [];
+
+appointments.push(appointment);
+
+localStorage.setItem("appointments",JSON.stringify(appointments));
+
+showAppointments();
+
+}
+
+
+document.getElementById("role").addEventListener("change",function(){
+
+showAppointments();
+
+});
+
 
 showClients();
 
