@@ -8,58 +8,45 @@
 
 <style>
 body {
-    font-family: Arial, sans-serif;
-    background:#f4f4f4;
-    margin:0;
-    padding:20px;
+font-family: Arial, sans-serif;
+background:#f4f4f4;
+padding:20px;
 }
 
 h1 {
-    text-align:center;
+text-align:center;
 }
 
 .card {
-    background:white;
-    padding:20px;
-    border-radius:15px;
-    margin-bottom:20px;
-    box-shadow:0 2px 8px #ccc;
+background:white;
+padding:20px;
+border-radius:15px;
+margin-bottom:20px;
 }
 
-input, select, button {
-    width:100%;
-    padding:12px;
-    margin-top:10px;
-    border-radius:8px;
-    border:1px solid #ccc;
-    box-sizing:border-box;
+input, button, select {
+width:100%;
+padding:12px;
+margin-top:10px;
+border-radius:8px;
+border:1px solid #ccc;
+box-sizing:border-box;
 }
 
 button {
-    background:#111;
-    color:white;
-    font-size:16px;
-}
-
-.item {
-    background:#eee;
-    padding:12px;
-    margin-top:10px;
-    border-radius:10px;
-}
-
-.menu {
-    display:flex;
-    gap:10px;
-    margin-bottom:20px;
-}
-
-.menu button {
-    flex:1;
+background:#111;
+color:white;
 }
 
 .hidden {
-    display:none;
+display:none;
+}
+
+.item {
+background:#eee;
+padding:12px;
+border-radius:10px;
+margin-top:10px;
 }
 </style>
 
@@ -67,185 +54,192 @@ button {
 
 <body>
 
+
+<div id="loginPage" class="card">
+
+<h1>🏋️ Locoo Gym</h1>
+
+<h3>Είσοδος με PIN</h3>
+
+<input id="pin" type="password" placeholder="Βάλε PIN">
+
+<button onclick="login()">
+Είσοδος
+</button>
+
+</div>
+
+
+
+<div id="appPage" class="hidden">
+
 <h1>🏋️ Locoo Gym</h1>
 
 <div class="card">
-<h2>Ρόλος</h2>
 
-<select id="role">
-<option value="Coach">Coach</option>
-<option value="Trainer 1">Trainer 1</option>
-</select>
+<h3>Χρήστης:</h3>
+
+<div id="user"></div>
 
 </div>
 
 
-<div class="menu">
-<button onclick="showClients()">👥 Πελάτες</button>
-<button onclick="showAppointments()">📅 Ραντεβού</button>
-</div>
+<div class="card">
 
+<h2>📅 Ραντεβού</h2>
 
-<div id="clientsPage" class="card">
+<input id="client" placeholder="Όνομα πελάτη">
 
-<h2>👥 Νέος Πελάτης</h2>
+<input id="date" type="date">
 
-<input id="clientName" placeholder="Ονοματεπώνυμο">
+<input id="time" type="time">
 
-<input id="clientPhone" placeholder="Τηλέφωνο">
-
-<input id="clientMoney" placeholder="Χρήματα (€)">
-
-<button onclick="addClient()">
-Αποθήκευση Πελάτη
-</button>
-
-<h3>Λίστα Πελατών</h3>
-
-<div id="clients"></div>
-
-</div>
-
-
-<div id="appointmentsPage" class="card hidden">
-
-<h2>📅 Νέο Ραντεβού</h2>
-
-<input id="appointmentClient" placeholder="Όνομα Πελάτη">
-
-<input id="appointmentDate" type="date">
-
-<input id="appointmentTime" type="time">
 
 <select id="trainer">
+
 <option>Coach</option>
+
 <option>Trainer 1</option>
+
 </select>
 
-<button onclick="addAppointment()">
+
+<button onclick="saveAppointment()">
 Αποθήκευση Ραντεβού
 </button>
 
 
-<h3>Ραντεβού</h3>
-
 <div id="appointments"></div>
 
-</div><script>
-
-function showClients(){
-
-document.getElementById("clientsPage").classList.remove("hidden");
-document.getElementById("appointmentsPage").classList.add("hidden");
-
-let box=document.getElementById("clients");
-box.innerHTML="";
-
-let clients=JSON.parse(localStorage.getItem("clients")) || [];
-
-clients.forEach(c=>{
-
-box.innerHTML += `
-<div class="item">
-<b>${c.name}</b><br>
-📞 ${c.phone}<br>
-💰 ${c.money} €
 </div>
-`;
 
-});
+
+</div>
+<script>
+
+let currentUser = "";
+
+
+function login(){
+
+let pin = document.getElementById("pin").value;
+
+
+if(pin === "1234"){
+
+currentUser = "Coach";
+
+}
+
+else if(pin === "1111"){
+
+currentUser = "Trainer 1";
+
+}
+
+else {
+
+alert("Λάθος PIN");
+return;
 
 }
 
 
-function addClient(){
+document.getElementById("loginPage").classList.add("hidden");
 
-let client={
-name:document.getElementById("clientName").value,
-phone:document.getElementById("clientPhone").value,
-money:document.getElementById("clientMoney").value
+document.getElementById("appPage").classList.remove("hidden");
+
+document.getElementById("user").innerHTML =
+"👤 " + currentUser;
+
+
+showAppointments();
+
+}
+
+
+
+function saveAppointment(){
+
+let appointment = {
+
+client: document.getElementById("client").value,
+
+date: document.getElementById("date").value,
+
+time: document.getElementById("time").value,
+
+trainer: document.getElementById("trainer").value
+
 };
 
-let clients=JSON.parse(localStorage.getItem("clients")) || [];
 
-clients.push(client);
+let appointments =
+JSON.parse(localStorage.getItem("appointments")) || [];
 
-localStorage.setItem("clients",JSON.stringify(clients));
 
-showClients();
+appointments.push(appointment);
+
+
+localStorage.setItem(
+"appointments",
+JSON.stringify(appointments)
+);
+
+
+showAppointments();
 
 }
+
 
 
 function showAppointments(){
 
-document.getElementById("appointmentsPage").classList.remove("hidden");
-document.getElementById("clientsPage").classList.add("hidden");
+let box =
+document.getElementById("appointments");
 
-let box=document.getElementById("appointments");
+
 box.innerHTML="";
 
-let appointments=JSON.parse(localStorage.getItem("appointments")) || [];
 
-let role=document.getElementById("role").value;
+let appointments =
+JSON.parse(localStorage.getItem("appointments")) || [];
+
 
 
 appointments.forEach(a=>{
 
-if(role=="Coach" || a.trainer==role){
+
+if(currentUser==="Coach" || a.trainer===currentUser){
+
 
 box.innerHTML += `
+
 <div class="item">
+
 👤 ${a.client}<br>
+
 📅 ${a.date}<br>
+
 ⏰ ${a.time}<br>
+
 🏋️ ${a.trainer}
+
 </div>
+
 `;
 
 }
 
-});
-
-}
-
-
-function addAppointment(){
-
-let appointment={
-
-client:document.getElementById("appointmentClient").value,
-
-date:document.getElementById("appointmentDate").value,
-
-time:document.getElementById("appointmentTime").value,
-
-trainer:document.getElementById("trainer").value
-
-};
-
-
-let appointments=JSON.parse(localStorage.getItem("appointments")) || [];
-
-appointments.push(appointment);
-
-localStorage.setItem("appointments",JSON.stringify(appointments));
-
-showAppointments();
-
-}
-
-
-document.getElementById("role").addEventListener("change",function(){
-
-showAppointments();
 
 });
 
 
-showClients();
+}
+
 
 </script>
+
 
 </body>
 </html>
