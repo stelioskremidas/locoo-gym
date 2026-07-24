@@ -7,47 +7,69 @@
 <title>Locoo Gym</title>
 
 <style>
+
 body {
-font-family: Arial, sans-serif;
-background:#f4f4f4;
-padding:20px;
+    font-family: Arial, sans-serif;
+    background:#111;
+    color:white;
+    padding:20px;
 }
 
 h1 {
-text-align:center;
+    text-align:center;
 }
 
 .card {
-background:white;
-padding:20px;
-border-radius:15px;
-margin-bottom:20px;
+    background:#222;
+    padding:20px;
+    border-radius:15px;
+    margin-bottom:20px;
 }
 
-input, button, select {
-width:100%;
-padding:12px;
-margin-top:10px;
-border-radius:8px;
-border:1px solid #ccc;
-box-sizing:border-box;
+input, select, button {
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    border-radius:8px;
+    border:none;
+    box-sizing:border-box;
+}
+
+input, select {
+    background:#333;
+    color:white;
 }
 
 button {
-background:#111;
-color:white;
+    background:#444;
+    color:white;
+    font-weight:bold;
 }
 
-.hidden {
-display:none;
+button:hover {
+    background:#666;
 }
 
 .item {
-background:#eee;
-padding:12px;
-border-radius:10px;
-margin-top:10px;
+    background:#333;
+    padding:12px;
+    border-radius:10px;
+    margin-top:10px;
 }
+
+.hidden {
+    display:none;
+}
+
+.menu {
+    display:flex;
+    gap:10px;
+}
+
+.menu button {
+    flex:1;
+}
+
 </style>
 
 </head>
@@ -55,13 +77,13 @@ margin-top:10px;
 <body>
 
 
-<div id="loginPage" class="card">
+<div id="login" class="card">
 
 <h1>🏋️ Locoo Gym</h1>
 
-<h3>Είσοδος με PIN</h3>
+<h3>PIN Εισόδου</h3>
 
-<input id="pin" type="password" placeholder="Βάλε PIN">
+<input id="pin" type="password" placeholder="PIN">
 
 <button onclick="login()">
 Είσοδος
@@ -71,45 +93,33 @@ margin-top:10px;
 
 
 
-<div id="appPage" class="hidden">
+<div id="app" class="hidden">
 
-<h1>🏋️ Locoo Gym</h1>
+<h1>🖤 Locoo Gym</h1>
+
 
 <div class="card">
 
-<h3>Χρήστης:</h3>
-
-<div id="user"></div>
+<h3 id="user"></h3>
 
 </div>
 
 
-<div class="card">
 
-<h2>📅 Ραντεβού</h2>
+<div class="menu">
 
-<input id="client" placeholder="Όνομα πελάτη">
-
-<input id="date" type="date">
-
-<input id="time" type="time">
-
-
-<select id="trainer">
-
-<option>Coach</option>
-
-<option>Trainer 1</option>
-
-</select>
-
-
-<button onclick="saveAppointment()">
-Αποθήκευση Ραντεβού
+<button onclick="clientsPage()">
+👥 Πελάτες
 </button>
 
+<button onclick="appointmentsPage()">
+📅 Ραντεβού
+</button>
 
-<div id="appointments"></div>
+</div>
+
+
+<div id="main" class="card">
 
 </div>
 
@@ -119,6 +129,13 @@ margin-top:10px;
 
 let currentUser = "";
 
+let trainers = JSON.parse(localStorage.getItem("trainers")) || [
+{
+name:"Trainer 1",
+pin:"1111"
+}
+];
+
 
 function login(){
 
@@ -127,30 +144,172 @@ let pin = document.getElementById("pin").value;
 
 if(pin === "1234"){
 
-currentUser = "Coach";
+currentUser="Coach";
 
 }
-
-else if(pin === "1111"){
-
-currentUser = "Trainer 1";
-
-}
-
 else {
+
+let found = trainers.find(t=>t.pin===pin);
+
+if(found){
+
+currentUser=found.name;
+
+}
+
+else{
 
 alert("Λάθος PIN");
 return;
 
 }
 
+}
 
-document.getElementById("loginPage").classList.add("hidden");
 
-document.getElementById("appPage").classList.remove("hidden");
+document.getElementById("login").classList.add("hidden");
+
+document.getElementById("app").classList.remove("hidden");
 
 document.getElementById("user").innerHTML =
-"👤 " + currentUser;
+"👤 "+currentUser;
+
+
+clientsPage();
+
+}
+
+
+
+function clientsPage(){
+
+let main=document.getElementById("main");
+
+main.innerHTML=`
+
+<h2>👥 Πελάτες</h2>
+
+<input id="name" placeholder="Όνομα">
+
+<input id="phone" placeholder="Τηλέφωνο">
+
+<input id="money" placeholder="Χρήματα (€)">
+
+<button onclick="saveClient()">
+Αποθήκευση
+</button>
+
+<div id="clientList"></div>
+
+`;
+
+
+showClients();
+
+}
+
+
+
+function saveClient(){
+
+let clients=
+JSON.parse(localStorage.getItem("clients")) || [];
+
+
+clients.push({
+
+name:document.getElementById("name").value,
+
+phone:document.getElementById("phone").value,
+
+money:document.getElementById("money").value
+
+});
+
+
+localStorage.setItem(
+"clients",
+JSON.stringify(clients)
+);
+
+
+showClients();
+
+}
+
+
+
+function showClients(){
+
+let box=document.getElementById("clientList");
+
+if(!box)return;
+
+box.innerHTML="";
+
+
+let clients=
+JSON.parse(localStorage.getItem("clients")) || [];
+
+
+clients.forEach(c=>{
+
+box.innerHTML+=`
+
+<div class="item">
+
+<b>${c.name}</b><br>
+
+📞 ${c.phone}<br>
+
+💰 ${c.money} €
+
+</div>
+
+`;
+
+});
+
+}
+
+
+
+function appointmentsPage(){
+
+let main=document.getElementById("main");
+
+
+main.innerHTML=`
+
+<h2>📅 Ραντεβού</h2>
+
+
+<input id="apClient" placeholder="Πελάτης">
+
+
+<input id="apDate" type="date">
+
+
+<input id="apTime" type="time">
+
+
+<select id="apTrainer">
+
+${trainers.map(t=>
+`<option>${t.name}</option>`
+).join("")}
+
+</select>
+
+
+<button onclick="saveAppointment()">
+Αποθήκευση Ραντεβού
+</button>
+
+
+<div id="appointmentList"></div>
+
+`;
 
 
 showAppointments();
@@ -161,24 +320,25 @@ showAppointments();
 
 function saveAppointment(){
 
-let appointment = {
-
-client: document.getElementById("client").value,
-
-date: document.getElementById("date").value,
-
-time: document.getElementById("time").value,
-
-trainer: document.getElementById("trainer").value
-
-};
-
-
-let appointments =
+let appointments=
 JSON.parse(localStorage.getItem("appointments")) || [];
 
 
-appointments.push(appointment);
+appointments.push({
+
+client:
+document.getElementById("apClient").value,
+
+date:
+document.getElementById("apDate").value,
+
+time:
+document.getElementById("apTime").value,
+
+trainer:
+document.getElementById("apTrainer").value
+
+});
 
 
 localStorage.setItem(
@@ -192,19 +352,17 @@ showAppointments();
 }
 
 
-
 function showAppointments(){
 
-let box =
-document.getElementById("appointments");
+let box=document.getElementById("appointmentList");
 
+if(!box)return;
 
 box.innerHTML="";
 
 
-let appointments =
+let appointments=
 JSON.parse(localStorage.getItem("appointments")) || [];
-
 
 
 appointments.forEach(a=>{
@@ -213,7 +371,7 @@ appointments.forEach(a=>{
 if(currentUser==="Coach" || a.trainer===currentUser){
 
 
-box.innerHTML += `
+box.innerHTML+=`
 
 <div class="item">
 
@@ -231,11 +389,10 @@ box.innerHTML += `
 
 }
 
-
 });
 
-
 }
+
 
 
 </script>
