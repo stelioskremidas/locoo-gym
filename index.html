@@ -221,22 +221,29 @@ showClients();
 
 
 
-function saveClient(){
+async function saveClient() {
 
-let clients=
-JSON.parse(localStorage.getItem("clients")) || [];
+const { error } = await supabaseClient
+.from("clients")
+.insert([
+{
+name: document.getElementById("name").value,
+phone: document.getElementById("phone").value,
+money: document.getElementById("money").value,
+notes: ""
+}
+]);
 
+if(error){
 
-clients.push({
+alert("Σφάλμα: " + error.message);
+return;
 
-name:document.getElementById("name").value,
+}
 
-phone:document.getElementById("phone").value,
+alert("Ο πελάτης αποθηκεύτηκε!");
 
-money:document.getElementById("money").value
-
-});
-
+}
 
 localStorage.setItem(
 "clients",
