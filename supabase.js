@@ -86,3 +86,65 @@ async function getClients(){
 
 
 }
+async function saveClient(client){
+
+
+    const response = await fetch(
+        SUPABASE_URL + "/rest/v1/clients",
+        {
+
+            method:"POST",
+
+            headers:{
+
+                "apikey":SUPABASE_KEY,
+
+                "Authorization":
+                "Bearer " + SUPABASE_KEY,
+
+                "Content-Type":
+                "application/json"
+
+            },
+
+
+            body:JSON.stringify(client)
+
+        }
+    );
+
+
+    return await response.json();
+
+}
+
+
+
+
+
+
+async function getClients(){
+
+
+    const response = await fetch(
+        SUPABASE_URL + "/rest/v1/clients?select=*",
+        {
+
+            headers:{
+
+                "apikey":SUPABASE_KEY,
+
+                "Authorization":
+                "Bearer " + SUPABASE_KEY
+
+            }
+
+        }
+    );
+
+
+
+    return await response.json();
+
+
+}
