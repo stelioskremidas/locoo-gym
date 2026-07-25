@@ -1,422 +1,359 @@
-<head>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-const SUPABASE_URL = "https://ijeprnrqsokgwduycxks.supabase.co";
-
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlqZXBybnJxc29rZ3dkdXljeGtzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ5MjQ1MTEsImV4cCI6MjEwMDUwMDUxMX0.t_z8Wx-IudG_NBndbdLUpqARofDrwQWZ4RuxFG7vmF8"
-  ;
-
-const supabaseClient = supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
-<title>Locoo Gym</title>
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="el">
+
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Locoo Gym</title>
 
-<style>
-
-body {
-    font-family: Arial, sans-serif;
-    background:#111;
-    color:white;
-    padding:20px;
-}
-
-h1 {
-    text-align:center;
-}
-
-.card {
-    background:#222;
-    padding:20px;
-    border-radius:15px;
-    margin-bottom:20px;
-}
-
-input, select, button {
-    width:100%;
-    padding:12px;
-    margin-top:10px;
-    border-radius:8px;
-    border:none;
-    box-sizing:border-box;
-}
-
-input, select {
-    background:#333;
-    color:white;
-}
-
-button {
-    background:#444;
-    color:white;
-    font-weight:bold;
-}
-
-button:hover {
-    background:#666;
-}
-
-.item {
-    background:#333;
-    padding:12px;
-    border-radius:10px;
-    margin-top:10px;
-}
-
-.hidden {
-    display:none;
-}
-
-.menu {
-    display:flex;
-    gap:10px;
-}
-
-.menu button {
-    flex:1;
-}
-
-</style>
+<link rel="stylesheet" href="style.css">
 
 </head>
+
 
 <body>
 
 
-<div id="login" class="card">
+<div class="app">
 
-<h1>🏋️ Locoo Gym</h1>
 
-<h3>PIN Εισόδου</h3>
+<header class="topbar">
 
-<input id="pin" type="password" placeholder="PIN">
+<div class="logo">
 
-<button onclick="login()">
-Είσοδος
+🏋️ <span>Locoo Gym</span>
+
+</div>
+
+
+<div class="user">
+
+Admin
+
+</div>
+
+
+</header>
+
+
+
+
+
+<aside class="sidebar">
+
+
+<button onclick="openPage('dashboard')">
+📊 Dashboard
 </button>
 
-</div>
 
-
-
-<div id="app" class="hidden">
-
-<h1>🖤 Locoo Gym</h1>
-
-
-<div class="card">
-
-<h3 id="user"></h3>
-
-</div>
-
-
-
-<div class="menu">
-
-<button onclick="clientsPage()">
+<button onclick="openPage('clients')">
 👥 Πελάτες
 </button>
 
-<button onclick="appointmentsPage()">
+
+<button onclick="openPage('appointments')">
 📅 Ραντεβού
 </button>
 
-</div>
 
-
-<div id="main" class="card">
-
-</div>
-
-
-</div>
-<script>
-
-let currentUser = "";
-
-let trainers = JSON.parse(localStorage.getItem("trainers")) || [
-{
-name:"Trainer 1",
-pin:"1111"
-}
-];
-
-
-function login(){
-
-let pin = document.getElementById("pin").value;
-
-
-if(pin === "1234"){
-
-currentUser="Coach";
-
-}
-else {
-
-let found = trainers.find(t=>t.pin===pin);
-
-if(found){
-
-currentUser=found.name;
-
-}
-
-else{
-
-alert("Λάθος PIN");
-return;
-
-}
-
-}
-
-
-document.getElementById("login").classList.add("hidden");
-
-document.getElementById("app").classList.remove("hidden");
-
-document.getElementById("user").innerHTML =
-"👤 "+currentUser;
-
-
-clientsPage();
-
-}
-
-
-
-function clientsPage(){
-
-let main=document.getElementById("main");
-
-main.innerHTML=`
-
-<h2>👥 Πελάτες</h2>
-
-<input id="name" placeholder="Όνομα">
-
-<input id="phone" placeholder="Τηλέφωνο">
-
-<input id="money" placeholder="Χρήματα (€)">
-
-<button onclick="saveClient()">
-Αποθήκευση
-</button>
-
-<div id="clientList"></div>
-
-`;
-
-
-showClients();
-
-}
-
-
-
-async function saveClient() {
-
-const { error } = await supabaseClient
-.from("clients")
-.insert([
-{
-name: document.getElementById("name").value,
-phone: document.getElementById("phone").value,
-money: document.getElementById("money").value,
-notes: ""
-}
-]);
-
-if(error){
-
-alert("Σφάλμα: " + error.message);
-return;
-
-}
-
-alert("Ο πελάτης αποθηκεύτηκε!");
-
-}
-
-localStorage.setItem(
-"clients",
-JSON.stringify(clients)
-);
-
-
-showClients();
-
-}
-
-
-
-function showClients(){
-
-let box=document.getElementById("clientList");
-
-if(!box)return;
-
-box.innerHTML="";
-
-
-let clients=
-JSON.parse(localStorage.getItem("clients")) || [];
-
-
-clients.forEach(c=>{
-
-box.innerHTML+=`
-
-<div class="item">
-
-<b>${c.name}</b><br>
-
-📞 ${c.phone}<br>
-
-💰 ${c.money} €
-
-</div>
-
-`;
-
-});
-
-}
-
-
-
-function appointmentsPage(){
-
-let main=document.getElementById("main");
-
-
-main.innerHTML=`
-
-<h2>📅 Ραντεβού</h2>
-
-
-<input id="apClient" placeholder="Πελάτης">
-
-
-<input id="apDate" type="date">
-
-
-<input id="apTime" type="time">
-
-
-<select id="apTrainer">
-
-${trainers.map(t=>
-`<option>${t.name}</option>`
-).join("")}
-
-</select>
-
-
-<button onclick="saveAppointment()">
-Αποθήκευση Ραντεβού
+<button onclick="openPage('trainers')">
+🏋️ Trainers
 </button>
 
 
-<div id="appointmentList"></div>
-
-`;
-
-
-showAppointments();
-
-}
+<button onclick="openPage('payments')">
+💰 Οικονομικά
+</button>
 
 
-
-function saveAppointment(){
-
-let appointments=
-JSON.parse(localStorage.getItem("appointments")) || [];
+<button onclick="openPage('settings')">
+⚙️ Ρυθμίσεις
+</button>
 
 
-appointments.push({
 
-client:
-document.getElementById("apClient").value,
-
-date:
-document.getElementById("apDate").value,
-
-time:
-document.getElementById("apTime").value,
-
-trainer:
-document.getElementById("apTrainer").value
-
-});
+</aside>
 
 
-localStorage.setItem(
-"appointments",
-JSON.stringify(appointments)
-);
 
 
-showAppointments();
 
-}
-
-
-function showAppointments(){
-
-let box=document.getElementById("appointmentList");
-
-if(!box)return;
-
-box.innerHTML="";
+<main class="content">
 
 
-let appointments=
-JSON.parse(localStorage.getItem("appointments")) || [];
 
 
-appointments.forEach(a=>{
+
+<section id="dashboard" class="page">
 
 
-if(currentUser==="Coach" || a.trainer===currentUser){
+<h1>
+Dashboard
+</h1>
 
 
-box.innerHTML+=`
 
-<div class="item">
+<div class="stats">
 
-👤 ${a.client}<br>
 
-📅 ${a.date}<br>
+<div class="box">
 
-⏰ ${a.time}<br>
+<h3>
+Μέλη
+</h3>
 
-🏋️ ${a.trainer}
+<strong id="membersCount">
+0
+</strong>
 
 </div>
 
-`;
-
-}
-
-});
-
-}
 
 
+<div class="box">
 
-</script>
+<h3>
+Σήμερα
+</h3>
+
+<strong id="todayAppointments">
+0
+</strong>
+
+</div>
+
+
+
+
+<div class="box">
+
+<h3>
+Έσοδα
+</h3>
+
+<strong id="income">
+0 €
+</strong>
+
+
+</div>
+
+
+
+
+<div class="box">
+
+<h3>
+Ενεργοί Trainers
+</h3>
+
+<strong id="trainersCount">
+0
+</strong>
+
+</div>
+
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+
+<section id="clients" class="page hidden">
+
+
+<h1>
+Πελάτες
+</h1>
+
+
+
+<div class="panel">
+
+
+<input 
+id="clientName"
+placeholder="Όνομα πελάτη">
+
+
+<input 
+id="clientPhone"
+placeholder="Τηλέφωνο">
+
+
+<button onclick="addClient()">
++ Προσθήκη
+</button>
+
+
+</div>
+
+
+
+<div id="clientsList">
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<section id="appointments" class="page hidden">
+
+
+<h1>
+Ραντεβού
+</h1>
+
+
+
+<div class="panel">
+
+
+<input 
+placeholder="Όνομα πελάτη">
+
+
+<input 
+type="date">
+
+
+<button>
+Κράτηση
+</button>
+
+
+</div>
+
+
+
+<div class="empty">
+
+Το σύστημα ραντεβού θα συνδεθεί με Supabase
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+
+<section id="trainers" class="page hidden">
+
+
+<h1>
+Trainers
+</h1>
+
+
+<div class="empty">
+
+Διαχείριση προπονητών
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<section id="payments" class="page hidden">
+
+
+<h1>
+Οικονομικά
+</h1>
+
+
+
+<div class="empty">
+
+Συνδρομές - Πληρωμές - Αποδείξεις
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<section id="settings" class="page hidden">
+
+
+<h1>
+Ρυθμίσεις
+
+</h1>
+
+
+<div class="empty">
+
+Ρυθμίσεις εφαρμογής
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+</main>
+
+
+</div>
+
+
+
+
+
+<script src="app.js"></script>
 
 
 </body>
+
+
 </html>
