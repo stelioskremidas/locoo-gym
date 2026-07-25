@@ -1,0 +1,393 @@
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+
+body{
+
+    background:#0f1115;
+    color:white;
+}
+
+
+
+/* Κεντρική εφαρμογή */
+
+.app{
+
+    min-height:100vh;
+    display:flex;
+
+}
+
+
+
+/* Header */
+
+.topbar{
+
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+    height:70px;
+
+    background:#171a21;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:0 30px;
+
+    border-bottom:1px solid #2b3038;
+
+    z-index:10;
+
+}
+
+
+
+.logo{
+
+    font-size:24px;
+    font-weight:bold;
+
+}
+
+
+.logo span{
+
+    margin-left:8px;
+
+}
+
+
+
+.user{
+
+    background:#242a33;
+    padding:10px 20px;
+    border-radius:20px;
+
+}
+
+
+
+
+
+/* Sidebar */
+
+.sidebar{
+
+    position:fixed;
+
+    top:70px;
+    left:0;
+
+    width:240px;
+
+    height:calc(100vh - 70px);
+
+    background:#15181e;
+
+    padding:25px 15px;
+
+}
+
+
+
+
+
+.sidebar button{
+
+    width:100%;
+
+    padding:15px;
+
+    margin-bottom:12px;
+
+    background:#20252d;
+
+    color:white;
+
+    border:none;
+
+    border-radius:12px;
+
+    text-align:left;
+
+    font-size:16px;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+
+
+.sidebar button:hover{
+
+    background:#00c853;
+
+    transform:translateX(5px);
+
+}
+
+
+
+
+
+
+/* Περιεχόμενο */
+
+.content{
+
+    margin-left:240px;
+
+    padding:100px 35px 40px;
+
+    width:100%;
+
+}
+
+
+
+
+
+.page h1{
+
+    margin-bottom:30px;
+
+    font-size:32px;
+
+}
+
+
+
+
+
+
+/* Dashboard Cards */
+
+
+.stats{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+
+    gap:25px;
+
+}
+
+
+
+
+.box{
+
+    background:#181c23;
+
+    padding:30px;
+
+    border-radius:20px;
+
+    border:1px solid #252b35;
+
+}
+
+
+
+.box h3{
+
+    color:#9aa3ad;
+
+    margin-bottom:15px;
+
+}
+
+
+
+.box strong{
+
+    font-size:35px;
+
+    color:#00e676;
+
+}
+
+
+
+
+
+
+
+
+/* Panels */
+
+
+.panel{
+
+    background:#181c23;
+
+    padding:25px;
+
+    border-radius:20px;
+
+    margin-bottom:25px;
+
+}
+
+
+
+
+
+input{
+
+    background:#0f1115;
+
+    color:white;
+
+    border:1px solid #343b46;
+
+    padding:14px;
+
+    border-radius:10px;
+
+    margin-right:10px;
+
+    margin-bottom:10px;
+
+}
+
+
+
+
+
+.panel button{
+
+    background:#00c853;
+
+    color:white;
+
+    border:none;
+
+    padding:14px 25px;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    font-weight:bold;
+
+}
+
+
+
+
+
+
+/* Πελάτες */
+
+
+.client-card{
+
+    background:#181c23;
+
+    padding:20px;
+
+    border-radius:15px;
+
+    margin-bottom:15px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+}
+
+
+
+
+
+
+
+.empty{
+
+    background:#181c23;
+
+    padding:40px;
+
+    border-radius:20px;
+
+    color:#9aa3ad;
+
+    text-align:center;
+
+}
+
+
+
+
+
+
+
+.hidden{
+
+    display:none;
+
+}
+
+
+
+
+
+
+
+/* Mobile */
+
+@media(max-width:800px){
+
+
+.sidebar{
+
+    width:80px;
+
+}
+
+
+
+.sidebar button{
+
+    font-size:0;
+
+    text-align:center;
+
+}
+
+
+.content{
+
+    margin-left:80px;
+
+    padding-left:20px;
+
+}
+
+
+
+.logo{
+
+    font-size:18px;
+
+}
+
+
+
+}
