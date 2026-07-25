@@ -8,9 +8,9 @@
 // όταν δημιουργήσουμε το project στο Supabase
 
 
-const SUPABASE_URL = "";
+const SUPABASE_URL = "https://msrgkaczrxpzizmoaekp.supabase.co/rest/v1/";
 
-const SUPABASE_KEY = "";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1zcmdrYWN6cnhweml6bW9hZWtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ5MzY5NDIsImV4cCI6MjEwMDUxMjk0Mn0.AC41nXNNdxI2_GhXASvaa1KNF3PhrTCJdmiX2tRcicQ";
 
 
 
