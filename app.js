@@ -261,5 +261,8 @@ window.onload = async function(){
 };
 console.log("Locoo Gym app loaded");
 
+
 window.addClient = addClient;
 window.openPage = openPage;
+
+console.log("app.js loaded");
