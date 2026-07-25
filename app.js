@@ -1,6 +1,6 @@
 // ===================================
-// Locoo Gym v1
-// Main Application Logic
+// Locoo Gym v2
+// Supabase Connected App
 // ===================================
 
 
@@ -17,7 +17,10 @@ let income = 0;
 
 
 
+// =============================
 // Αλλαγή σελίδων
+// =============================
+
 
 function openPage(page){
 
@@ -29,7 +32,6 @@ function openPage(page){
         section.classList.add("hidden");
 
     });
-
 
 
     document
@@ -46,21 +48,51 @@ function openPage(page){
 
 
 // =============================
-// Πελάτες
+// Φόρτωση πελατών από Supabase
 // =============================
 
 
+async function loadClients(){
 
-function addClient(){
+
+    const data = await getClients();
+
+
+
+    clients = data;
+
+
+
+    renderClients();
+
+
+
+    updateDashboard();
+
+
+}
+
+
+
+
+
+
+
+// =============================
+// Προσθήκη πελάτη
+// =============================
+
+
+async function addClient(){
 
 
     let name =
     document.getElementById("clientName").value;
 
 
-
     let phone =
     document.getElementById("clientPhone").value;
+
 
 
 
@@ -74,33 +106,34 @@ function addClient(){
 
 
 
-
-    let client={
-
-        id:Date.now(),
+    let client = {
 
         name:name,
 
-        phone:phone
+        phone:phone,
+
+        subscription:"Basic",
+
+        active:true
 
     };
 
 
 
-    clients.push(client);
+
+    await saveClient(client);
 
 
 
-    renderClients();
+    await loadClients();
 
-
-    updateDashboard();
 
 
 
     document.getElementById("clientName").value="";
 
     document.getElementById("clientPhone").value="";
+
 
 
 }
@@ -111,13 +144,19 @@ function addClient(){
 
 
 
+
+
+// =============================
+// Εμφάνιση πελατών
+// =============================
+
+
 function renderClients(){
 
 
 
     let container =
     document.getElementById("clientsList");
-
 
 
     container.innerHTML="";
@@ -140,31 +179,19 @@ function renderClients(){
 
         <div>
 
-        <strong>
-        ${client.name}
-        </strong>
+        <strong>${client.name}</strong>
 
         <br>
 
-        📞 ${client.phone}
+        📞 ${client.phone || ""}
 
         </div>
-
-
-
-        <button onclick="deleteClient(${client.id})">
-
-        Διαγραφή
-
-        </button>
-
 
         `;
 
 
 
         container.appendChild(div);
-
 
 
     });
@@ -180,37 +207,9 @@ function renderClients(){
 
 
 
-function deleteClient(id){
-
-
-
-    clients =
-    clients.filter(client=>client.id!==id);
-
-
-
-    renderClients();
-
-
-
-    updateDashboard();
-
-
-
-}
-
-
-
-
-
-
-
-
-
 // =============================
 // Dashboard
 // =============================
-
 
 
 function updateDashboard(){
@@ -224,12 +223,10 @@ function updateDashboard(){
 
 
 
-
     document
     .getElementById("todayAppointments")
     .innerText =
     appointments.length;
-
 
 
 
@@ -240,13 +237,10 @@ function updateDashboard(){
 
 
 
-
-
     document
     .getElementById("trainersCount")
     .innerText =
     trainers.length;
-
 
 
 }
@@ -258,14 +252,10 @@ function updateDashboard(){
 
 
 
-
-// Εκκίνηση εφαρμογής
-
-
-window.onload=function(){
+window.onload = async function(){
 
 
-    updateDashboard();
+    await loadClients();
 
 
 };
